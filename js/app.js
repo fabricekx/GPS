@@ -1,3 +1,4 @@
+let start = false;
 let watchId; // Variable to store the watch position ID
 
 function success(position) {
@@ -11,25 +12,46 @@ function success(position) {
 
     // Check if speed is available
     if (position.coords.speed !== null) {
-        // Retrieve speed
-        const speed = position.coords.speed;
-
+        // Retrieve speed en km/h (*3.6)
+        // const speed = position.coords.speed.toFixed(2) * 3.6;
+        const speed =3
         // Update speed HTML element
-        document.getElementById("speed").innerHTML = `<div class="container alert alert-primary">Speed: ${speed} m/s </div>`;
+        if (unit == "km/h") {
+            document.getElementById("speed").innerHTML = `<div class="container d-flex alert alert-primary" >
+            <div>Vitesse: ${speed} </div>
+             <div id="unit"><select  class="form-select" aria-label="">
+            <option selected value="km/h" >km/h</option>
+            <option  value="noeuds">noeuds</option>
+            </select>
+            </div>
+            </div>`;
+            start = true
+        } else {
+
+            document.getElementById("speed").innerHTML = `<div class="container d-flex alert alert-primary" >
+            <div>Vitesse: ${speed * 0.539957} </div>
+             <div id="unit"><select  class="form-select" aria-label="">
+            <option value="km/h" >km/h</option>
+            <option selected value="noeuds">noeuds</option>
+            </select>
+            </div>
+            </div>`;
+        start=true
+        }
     } else {
         // Update speed HTML element if speed information is not available
-        document.getElementById("speed").innerHTML = '<div class="container alert alert-danger">Speed information not available.';
+        document.getElementById("speed").innerHTML = '<div class="container alert alert-danger">Vitesse non disponible';
     }
 
     if (position.coords.heading !== null) {
         // Retrieve heading
-        const heading = position.coords.heading;
+        const heading = position.coords.heading.toFixed(0);
 
         // Update heading HTML element
-        document.getElementById("heading").innerHTML = `<div class="container alert alert-primary">Heading: ${heading} degrees </div>`;
+        document.getElementById("heading").innerHTML = `<div class="container alert alert-primary">Cap: ${heading} degrees </div>`;
     } else {
         // Update heading HTML element if heading information is not available
-        document.getElementById("heading").innerHTML = '<div class="container alert alert-danger">Heading information not available.</div>';
+        document.getElementById("heading").innerHTML = '<div class="container alert alert-danger">Cap non disponible.</div>';
     }
 }
 
@@ -42,7 +64,7 @@ function startTracking() {
         navigator.permissions.query({ name: 'geolocation' }).then(function (result) {
             if (result.state === 'granted') {
                 // Permission already granted, proceed with geolocation
-                console.log("Geolocation permission granted");
+                console.log("Geolocation permission granted <br>");
 
                 // Start watching for changes in position
                 watchId = navigator.geolocation.watchPosition(success, error);
@@ -66,10 +88,19 @@ function pauseTracking() {
         navigator.geolocation.clearWatch(watchId);
         console.log("Geolocation tracking paused");
     }
-}
+};
+
 
 // Button click event listener to start tracking
 document.getElementById("startTracking").addEventListener("click", startTracking);
 
 // Button click event listener to pause tracking
 document.getElementById("pauseTracking").addEventListener("click", pauseTracking);
+
+if (start==true) {
+var e = document.getElementById("unit");
+e.addEventListener("onchange", changeUnit);};
+function changeUnit() {var unit = e.value; return unit};
+
+
+
