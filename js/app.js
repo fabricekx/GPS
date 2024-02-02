@@ -7,7 +7,7 @@ function success(position) {
     console.log(position);
 
     // Update position HTML element
-    document.getElementById("position").innerHTML = `Latitude: ${latitude}<br>Longitude: ${longitude}`;
+    document.getElementById("position").innerHTML = `<div class="container alert alert-primary">Latitude: ${latitude} Longitude: ${longitude}</div>`;
 
     // Check if speed is available
     if (position.coords.speed !== null) {
@@ -15,10 +15,10 @@ function success(position) {
         const speed = position.coords.speed;
 
         // Update speed HTML element
-        document.getElementById("speed").innerHTML = `Speed: ${speed} meters per second`;
+        document.getElementById("speed").innerHTML = `<div class="container alert alert-primary">Speed: ${speed} m/s </div>`;
     } else {
         // Update speed HTML element if speed information is not available
-        document.getElementById("speed").innerHTML = 'Speed information not available.';
+        document.getElementById("speed").innerHTML = '<div class="container alert alert-danger">Speed information not available.';
     }
 
     if (position.coords.heading !== null) {
@@ -26,10 +26,10 @@ function success(position) {
         const heading = position.coords.heading;
 
         // Update heading HTML element
-        document.getElementById("heading").innerHTML = `Heading: ${heading} degrees`;
+        document.getElementById("heading").innerHTML = `<div class="container alert alert-primary">Heading: ${heading} degrees </div>`;
     } else {
         // Update heading HTML element if heading information is not available
-        document.getElementById("heading").innerHTML = 'Heading information not available.';
+        document.getElementById("heading").innerHTML = '<div class="container alert alert-danger">Heading information not available.</div>';
     }
 }
 
