@@ -1,3 +1,5 @@
+let watchId; // Variable to store the watch position ID
+
 function success(position) {
     // Retrieve latitude and longitude
     const latitude = position.coords.latitude;
@@ -35,23 +37,39 @@ function error(error) {
     console.error(`Error getting geolocation: ${error.message}`);
 }
 
-if ("geolocation" in navigator) {
-    navigator.permissions.query({ name: 'geolocation' }).then(function (result) {
-        if (result.state === 'granted') {
-            // Permission already granted, proceed with geolocation
-            console.log("Geolocation permission granted");
+function startTracking() {
+    if ("geolocation" in navigator) {
+        navigator.permissions.query({ name: 'geolocation' }).then(function (result) {
+            if (result.state === 'granted') {
+                // Permission already granted, proceed with geolocation
+                console.log("Geolocation permission granted");
 
-            // Request current position
-            navigator.geolocation.getCurrentPosition(success, error);
-        } else if (result.state === 'prompt') {
-            // Permission not yet granted, prompt the user
-            console.log("Geolocation permission not granted, requesting permission...");
-            navigator.geolocation.getCurrentPosition(success, error);
-        } else {
-            // Permission denied or unavailable
-            console.log("Geolocation permission denied or unavailable");
-        }
-    });
-} else {
-    console.log("Geolocation is not supported by this browser.");
+                // Start watching for changes in position
+                watchId = navigator.geolocation.watchPosition(success, error);
+            } else if (result.state === 'prompt') {
+                // Permission not yet granted, prompt the user
+                console.log("Geolocation permission not granted, requesting permission...");
+                watchId = navigator.geolocation.watchPosition(success, error);
+            } else {
+                // Permission denied or unavailable
+                console.log("Geolocation permission denied or unavailable");
+            }
+        });
+    } else {
+        console.log("Geolocation is not supported by this browser.");
+    }
 }
+
+function pauseTracking() {
+    // Stop watching for position updates
+    if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
+        console.log("Geolocation tracking paused");
+    }
+}
+
+// Button click event listener to start tracking
+document.getElementById("startTracking").addEventListener("click", startTracking);
+
+// Button click event listener to pause tracking
+document.getElementById("pauseTracking").addEventListener("click", pauseTracking);
