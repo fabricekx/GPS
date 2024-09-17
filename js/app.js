@@ -22,7 +22,7 @@ const noeuds= (0.539957*kmh).toFixed(1)
         if (unit == "km/h") {
             document.getElementById("speed").innerHTML = `<div class="container d-flex alert alert-primary" >
             <div>Vitesse: ${kmh} </div>
-             <div ><select id="unit" class="form-select" aria-label="">
+            <div ><select id="unit" class="form-select" aria-label="">
             <option selected value="km/h" >km/h</option>
             <option  value="noeuds">noeuds</option>
             </select>
@@ -38,7 +38,7 @@ const noeuds= (0.539957*kmh).toFixed(1)
 
             document.getElementById("speed").innerHTML = `<div class="container d-flex alert alert-primary" >
             <div>Vitesse: ${noeuds} </div>
-             <div ><select id="unit" class="form-select" aria-label="">
+            <div ><select id="unit" class="form-select" aria-label="">
             <option value="km/h" >km/h</option>
             <option selected value="noeuds">noeuds</option>
             </select>
@@ -86,7 +86,11 @@ function startTracking() {
                 console.log("Geolocation permission granted <br>");
 
                 // Start watching for changes in position
-                watchId = navigator.geolocation.watchPosition(success, error);
+                watchId = navigator.geolocation.watchPosition(success, error,  {
+                    enableHighAccuracy: true,
+                    timeout: 5000, // Temps d'attente avant que la demande échoue
+                    maximumAge: 0 // Ne pas utiliser les données mises en cache
+                });
             } else if (result.state === 'prompt') {
                 // Permission not yet granted, prompt the user
                 console.log("Geolocation permission not granted, requesting permission...");
